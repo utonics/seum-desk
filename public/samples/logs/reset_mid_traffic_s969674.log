@@ -1,0 +1,7 @@
+UVM_INFO @ 0: reporter [RNTST] Running test reset_mid_traffic_test with seed 969674...
+UVM_INFO @ 0: uvm_test_top.env [BUILD] agents: enq, deq; scoreboard on
+UVM_INFO @ 100: uvm_test_top.env.driver [DRV] reset released
+UVM_INFO @ 35704: uvm_test_top.env.scoreboard [SB] 676 transfers compared
+UVM_INFO @ 71409: reporter [TEST_DONE] *** TEST PASSED ***
+--- UVM Report Summary --- UVM_ERROR : 0  UVM_FATAL : 0
+Simulation finished at 71429 ps, wall 0:04:33

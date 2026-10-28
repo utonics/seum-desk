@@ -1,0 +1,52 @@
+# SeumLink-F 컨트롤러 레지스터 맵 (명세 SS-SPEC-0042 v1.0 §10) — 단일 원천(Single Source of Truth)
+# 접근 속성: RW 읽기·쓰기 / RO 읽기 전용(쓰기 무시) / WO 쓰기 전용(읽으면 0, 1사이클 펄스) / W1C 1을 쓰면 지워짐
+block: seumlink_f
+base_addr: 0x40001000
+data_width: 32
+addr_width: 8
+registers:
+  - name: CTRL
+    offset: 0x00
+    desc: 동작 제어
+    fields:
+      - {name: EN,    bits: "0",   access: RW,  reset: 0,  desc: 동작 허용}
+      - {name: MODE,  bits: "2:1", access: RW,  reset: 1,  desc: "0 bypass, 1 normal, 2 hold"}
+      - {name: FLUSH, bits: "3",   access: WO,  reset: 0,  desc: 1을 쓰면 FIFO 비움(펄스)}
+  - name: STATUS
+    offset: 0x04
+    desc: 상태 플래그
+    fields:
+      - {name: BUSY,  bits: "0", access: RO, reset: 0, desc: 전송 진행 중}
+      - {name: EMPTY, bits: "1", access: RO, reset: 1, desc: FIFO 비어 있음}
+      - {name: FULL,  bits: "2", access: RO, reset: 0, desc: FIFO 가득 참}
+  - name: FIFO_LEVEL
+    offset: 0x08
+    desc: 현재 FIFO 항목 수
+    fields:
+      - {name: LEVEL, bits: "4:0", access: RO, reset: 0, desc: "0~16"}
+  - name: IRQ
+    offset: 0x0C
+    desc: 인터럽트 상태 (1을 쓰면 지워짐)
+    fields:
+      - {name: DONE, bits: "0", access: W1C, reset: 0, desc: 전송 완료}
+      - {name: ERR,  bits: "1", access: W1C, reset: 0, desc: 오류 발생}
+      - {name: LAT,  bits: "2", access: W1C, reset: 0, desc: 지연 한도 초과}
+      - {name: OVF,  bits: "3", access: W1C, reset: 0, desc: FIFO 넘침 (v1.0 추가)}
+  - name: LAT_MAX
+    offset: 0x10
+    desc: LAT-01 판정 한도(사이클)
+    fields:
+      - {name: MAX, bits: "7:0", access: RW, reset: 24, desc: 기본 24 (v1.0 변경)}
+  - name: INT_MASK
+    offset: 0x14
+    desc: 인터럽트 마스크 (1이면 IRQ 출력 막음, v1.0 추가)
+    fields:
+      - {name: DONE_M, bits: "0", access: RW, reset: 0, desc: DONE 마스크}
+      - {name: ERR_M,  bits: "1", access: RW, reset: 0, desc: ERR 마스크}
+      - {name: LAT_M,  bits: "2", access: RW, reset: 0, desc: LAT 마스크}
+  - name: VERSION
+    offset: 0x1C
+    desc: IP 버전
+    fields:
+      - {name: MINOR, bits: "7:0",  access: RO, reset: 0x00, desc: v1.0}
+      - {name: MAJOR, bits: "15:8", access: RO, reset: 0x01, desc: ""}

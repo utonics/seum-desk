@@ -1,0 +1,8 @@
+UVM_INFO @ 0: reporter [RNTST] Running test fifo_basic_test with seed 175110...
+UVM_INFO @ 0: uvm_test_top.env [BUILD] agents: enq, deq; scoreboard on
+UVM_INFO @ 100: uvm_test_top.env.driver [DRV] reset released
+UVM_INFO @ 40157: uvm_test_top.env.scoreboard [SB] 198 transfers compared
+UVM_ERROR @ 80314: uvm_test_top.env.driver [DRV] unexpected x on deq_rdy at cycle 841
+UVM_INFO @ 80324: reporter [TEST_DONE] *** TEST FAILED ***
+--- UVM Report Summary --- UVM_ERROR : 1  UVM_FATAL : 0
+Simulation finished at 80334 ps, wall 0:06:17

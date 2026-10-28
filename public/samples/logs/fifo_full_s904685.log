@@ -1,0 +1,7 @@
+UVM_INFO @ 0: reporter [RNTST] Running test fifo_full_test with seed 904685...
+UVM_INFO @ 0: uvm_test_top.env [BUILD] agents: enq, deq; scoreboard on
+UVM_INFO @ 100: uvm_test_top.env.driver [DRV] reset released
+UVM_INFO @ 23547: uvm_test_top.env.scoreboard [SB] 585 transfers compared
+UVM_INFO @ 47095: reporter [TEST_DONE] *** TEST PASSED ***
+--- UVM Report Summary --- UVM_ERROR : 0  UVM_FATAL : 0
+Simulation finished at 47115 ps, wall 0:06:34

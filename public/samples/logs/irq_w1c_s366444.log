@@ -1,0 +1,7 @@
+UVM_INFO @ 0: reporter [RNTST] Running test irq_w1c_test with seed 366444...
+UVM_INFO @ 0: uvm_test_top.env [BUILD] agents: enq, deq; scoreboard on
+UVM_INFO @ 100: uvm_test_top.env.driver [DRV] reset released
+UVM_INFO @ 23817: uvm_test_top.env.scoreboard [SB] 273 transfers compared
+UVM_INFO @ 47634: reporter [TEST_DONE] *** TEST PASSED ***
+--- UVM Report Summary --- UVM_ERROR : 0  UVM_FATAL : 0
+Simulation finished at 47654 ps, wall 0:01:49

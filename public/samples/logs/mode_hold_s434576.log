@@ -1,0 +1,7 @@
+UVM_INFO @ 0: reporter [RNTST] Running test mode_hold_test with seed 434576...
+UVM_INFO @ 0: uvm_test_top.env [BUILD] agents: enq, deq; scoreboard on
+UVM_INFO @ 100: uvm_test_top.env.driver [DRV] reset released
+UVM_INFO @ 32130: uvm_test_top.env.scoreboard [SB] 180 transfers compared
+UVM_INFO @ 64261: reporter [TEST_DONE] *** TEST PASSED ***
+--- UVM Report Summary --- UVM_ERROR : 0  UVM_FATAL : 0
+Simulation finished at 64281 ps, wall 0:04:21
