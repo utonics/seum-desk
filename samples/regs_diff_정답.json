@@ -1,0 +1,44 @@
+{
+  "_설명": "v0.9 → v1.0 레지스터 단위 비교 정답. VERSION 레지스터는 '버전 표기'라 비교에서 뺀다(사람이 정한 규칙).",
+  "summary": {
+    "added": 1,
+    "changed": 2,
+    "removed": 0
+  },
+  "added": [
+    {
+      "register": "INT_MASK",
+      "offset": "0x14",
+      "fields": [
+        "DONE_M",
+        "ERR_M",
+        "LAT_M"
+      ]
+    }
+  ],
+  "changed": [
+    {
+      "register": "IRQ",
+      "offset": "0x0C",
+      "change": "필드 추가",
+      "field": "OVF",
+      "bits": "3",
+      "access": "W1C"
+    },
+    {
+      "register": "LAT_MAX",
+      "offset": "0x10",
+      "change": "기본값",
+      "field": "MAX",
+      "from": 20,
+      "to": 24
+    }
+  ],
+  "removed": [],
+  "excluded": [
+    {
+      "register": "VERSION",
+      "reason": "버전 표기 변경은 비교에서 제외"
+    }
+  ]
+}

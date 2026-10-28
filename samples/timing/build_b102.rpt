@@ -1,0 +1,198 @@
+Report : timing summary  (가상 형식 · ㈜세움실리콘 사내 요약)
+Design : seumlink_f_top
+Build  : b102    Date : 2026-10-21
+Corner : ss_0p72v_125c (가상)
+============================================================
+Path 1
+  Startpoint : u_lat/cnt_reg[4]
+  Endpoint   : u_lat/max_hit_reg
+  Path Group : clk_io
+  Data required time : 4.896
+  Data arrival time  : 4.851
+  Slack : +0.045 (MET)
+------------------------------------------------------------
+Path 2
+  Startpoint : u_fifo/rd_ptr_reg[2]
+  Endpoint   : u_lat/max_hit_reg
+  Path Group : clk_bus
+  Data required time : 2.430
+  Data arrival time  : 2.111
+  Slack : +0.319 (MET)
+------------------------------------------------------------
+Path 3
+  Startpoint : u_ctrl/state_reg[2]
+  Endpoint   : u_lat/max_hit_reg
+  Path Group : clk_core
+  Data required time : 0.935
+  Data arrival time  : 1.105
+  Slack : -0.170 (VIOLATED)
+------------------------------------------------------------
+Path 4
+  Startpoint : u_fifo/rd_ptr_reg[7]
+  Endpoint   : u_lat/max_hit_reg
+  Path Group : clk_core
+  Data required time : 0.938
+  Data arrival time  : 0.869
+  Slack : +0.069 (MET)
+------------------------------------------------------------
+Path 5
+  Startpoint : u_fifo/rd_ptr_reg[1]
+  Endpoint   : u_ctrl/mode_q_reg[3]
+  Path Group : clk_bus
+  Data required time : 2.423
+  Data arrival time  : 2.074
+  Slack : +0.349 (MET)
+------------------------------------------------------------
+Path 6
+  Startpoint : u_irq/pend_reg[5]
+  Endpoint   : u_fifo/mem_reg[8][1]
+  Path Group : clk_bus
+  Data required time : 2.383
+  Data arrival time  : 2.105
+  Slack : +0.278 (MET)
+------------------------------------------------------------
+Path 7
+  Startpoint : u_lat/cnt_reg[3]
+  Endpoint   : u_ctrl/mode_q_reg[6]
+  Path Group : clk_bus
+  Data required time : 2.422
+  Data arrival time  : 2.271
+  Slack : +0.151 (MET)
+------------------------------------------------------------
+Path 8
+  Startpoint : u_bus/addr_q_reg[6]
+  Endpoint   : u_lat/max_hit_reg
+  Path Group : clk_core
+  Data required time : 0.886
+  Data arrival time  : 0.534
+  Slack : +0.352 (MET)
+------------------------------------------------------------
+Path 9
+  Startpoint : u_fifo/rd_ptr_reg[5]
+  Endpoint   : u_bus/rdata_q_reg[12]
+  Path Group : clk_bus
+  Data required time : 2.412
+  Data arrival time  : 2.127
+  Slack : +0.285 (MET)
+------------------------------------------------------------
+Path 10
+  Startpoint : u_irq/pend_reg[0]
+  Endpoint   : u_bus/rdata_q_reg[7]
+  Path Group : clk_io
+  Data required time : 4.901
+  Data arrival time  : 4.770
+  Slack : +0.131 (MET)
+------------------------------------------------------------
+Path 11
+  Startpoint : u_fifo/wr_ptr_reg[5]
+  Endpoint   : u_bus/rdata_q_reg[14]
+  Path Group : clk_io
+  Data required time : 4.897
+  Data arrival time  : 4.786
+  Slack : +0.111 (MET)
+------------------------------------------------------------
+Path 12
+  Startpoint : u_bus/addr_q_reg[1]
+  Endpoint   : u_ctrl/mode_q_reg[29]
+  Path Group : clk_core
+  Data required time : 0.882
+  Data arrival time  : 0.694
+  Slack : +0.188 (MET)
+------------------------------------------------------------
+Path 13
+  Startpoint : u_lat/cnt_reg[6]
+  Endpoint   : u_irq/irq_q_reg[15]
+  Path Group : CLK_BUS
+  Data required time : 2.405
+  Data arrival time  : 2.056
+  Slack : +0.349 (MET)
+------------------------------------------------------------
+Path 14
+  Startpoint : u_lat/cnt_reg[5]
+  Endpoint   : u_fifo/level_q_reg[2]
+  Path Group : clk_core
+  Data required time : 0.921
+  Data arrival time  : 1.002
+  Slack : -0.081 (VIOLATED)
+------------------------------------------------------------
+Path 15
+  Startpoint : u_bus/addr_q_reg[0]
+  Endpoint   : u_lat/max_hit_reg
+  Path Group : clk_bus
+  Data required time : 2.390
+  Data arrival time  : 2.157
+  Slack : +0.233 (MET)
+------------------------------------------------------------
+Path 16
+  Startpoint : u_bus/addr_q_reg[2]
+  Endpoint   : u_fifo/mem_reg[9][10]
+  Path Group : clk_io
+  Data required time : 4.896
+  Data arrival time  : 4.651
+  Slack : +0.245 (MET)
+------------------------------------------------------------
+Path 17
+  Startpoint : u_fifo/rd_ptr_reg[6]
+  Endpoint   : u_ctrl/mode_q_reg[4]
+  Path Group : clk_io
+  Data required time : 4.917
+  Data arrival time  : 4.805
+  Slack : +0.112 (MET)
+------------------------------------------------------------
+Path 18
+  Startpoint : u_fifo/wr_ptr_reg[1]
+  Endpoint   : u_fifo/mem_reg[9][1]
+  Path Group : CLK_BUS
+  Data required time : 2.394
+  Data arrival time  : 2.463
+  Slack : -0.069 (VIOLATED)
+------------------------------------------------------------
+Path 19
+  Startpoint : u_irq/pend_reg[4]
+  Endpoint   : u_irq/irq_q_reg[27]
+  Path Group : clk_core
+  Data required time : 0.922
+  Data arrival time  : 1.095
+  Slack : -0.173 (VIOLATED)
+------------------------------------------------------------
+Path 20
+  Startpoint : u_ctrl/state_reg[5]
+  Endpoint   : u_fifo/mem_reg[11][29]
+  Path Group : clk_core
+  Data required time : 0.949
+  Data arrival time  : 0.865
+  Slack : +0.084 (MET)
+------------------------------------------------------------
+Path 21
+  Startpoint : u_fifo/rd_ptr_reg[7]
+  Endpoint   : u_fifo/mem_reg[5][11]
+  Path Group : clk_core
+  Data required time : 0.944
+  Data arrival time  : 1.048
+  Slack : -0.104 (VIOLATED)
+------------------------------------------------------------
+Path 22
+  Startpoint : u_lat/cnt_reg[3]
+  Endpoint   : u_lat/max_hit_reg
+  Path Group : clk_io
+  Data required time : 4.925
+  Data arrival time  : 4.625
+  Slack : +0.300 (MET)
+------------------------------------------------------------
+Path 23
+  Startpoint : u_irq/pend_reg[7]
+  Endpoint   : u_bus/rdata_q_reg[29]
+  Path Group : clk_io
+  Data required time : 4.936
+  Data arrival time  : 4.797
+  Slack : +0.139 (MET)
+------------------------------------------------------------
+Path 24
+  Startpoint : u_bus/addr_q_reg[6]
+  Endpoint   : u_fifo/level_q_reg[2]
+  Path Group : clk_io
+  Data required time : 4.950
+  Data arrival time  : 4.899
+  Slack : +0.051 (MET)
+------------------------------------------------------------
+Total paths : 24

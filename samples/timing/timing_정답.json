@@ -1,0 +1,68 @@
+{
+  "_설명": "빌드별 정답. WNS=가장 나쁜 slack, TNS=음수 slack 합, 위반=slack<0 경로 수. b102에는 그룹 이름이 'CLK_BUS'처럼 대문자로 적힌 경로가 섞여 있다 — 같은 그룹으로 세야 한다(함정).",
+  "builds": {
+    "b101": {
+      "date": "2026-10-20",
+      "paths": 24,
+      "wns": -0.141,
+      "tns": -0.48,
+      "violations": 9,
+      "by_group": {
+        "clk_core": {
+          "violations": 6,
+          "wns": -0.141
+        },
+        "clk_bus": {
+          "violations": 2,
+          "wns": -0.086
+        },
+        "clk_io": {
+          "violations": 1,
+          "wns": -0.07
+        }
+      }
+    },
+    "b102": {
+      "date": "2026-10-21",
+      "paths": 24,
+      "wns": -0.173,
+      "tns": -0.597,
+      "violations": 5,
+      "by_group": {
+        "clk_core": {
+          "violations": 4,
+          "wns": -0.173
+        },
+        "clk_bus": {
+          "violations": 1,
+          "wns": -0.069
+        },
+        "clk_io": {
+          "violations": 0,
+          "wns": 0.045
+        }
+      }
+    },
+    "b103": {
+      "date": "2026-10-22",
+      "paths": 24,
+      "wns": -0.116,
+      "tns": -0.116,
+      "violations": 1,
+      "by_group": {
+        "clk_core": {
+          "violations": 1,
+          "wns": -0.116
+        },
+        "clk_bus": {
+          "violations": 0,
+          "wns": 0.009
+        },
+        "clk_io": {
+          "violations": 0,
+          "wns": 0.034
+        }
+      }
+    }
+  }
+}
