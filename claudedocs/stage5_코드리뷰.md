@@ -42,3 +42,13 @@
 - `tests/perf.test.ts`: `scripts/gen-logs.mjs`의 `generateLogs(1000)`를 메모리에서 만들어 파싱+요약+필터 1초 이내를 고정. 측정값 18 ms(테스트 파일 전체).
 - 회귀 탭 '이전 실행과 비교'(`lib/regressCompare.ts`): 새로 실패 · 고쳐짐 · 여전히 실패 · 사라짐 · 새 실행. 샘플 100개 → 가상 1,000개로 확인: 새로 실패 135 · 사라짐 100 · 새 실행 1000.
 - Windows(Edge) 확인은 미검증으로 남음.
+
+## 추천 작업 2차 반영 (2026-10-28, PR feature/recommendations)
+
+1. 명세서 §10 ↔ YAML 교차 검사(`lib/specRegmap.ts`, 레지스터 뷰어 '명세 대조' 탭). 명세 v0.9 ↔ YAML v0.9 불일치 0, ↔ YAML v1.0 불일치 5(INT_MASK·IRQ.OVF·LAT_MAX 리셋·VERSION 리셋 2).
+2. GitHub Actions CI(`.github/workflows/ci.yml`): Ubuntu·Windows에서 test · lint · build. Windows는 CI가 처음 돌 때 검증된다.
+3. IndexedDB 보존(`lib/idbStorage.ts` + zustand persist). 브라우저에서 1,000개 로그·레지스터 2개를 연 뒤 새 페이지 로드 → 홈에 그대로 표시되는 것 확인.
+4. 회귀: 원인별 건수·기준 고정·실패 재현 명령 모두 복사. 가상 1,000개에서 원인 4패턴(37·36·32·30) 확인.
+5. 타이밍: endpoint별 추적(b103에서 아직 위반 1건 `u_bus/rdata_q_reg[10]`), 위반 경로 15건 표.
+
+보류: 파형 규칙 검사기(`fifo_wave.csv` 샘플·정답지 없음), Playwright E2E(패키지 추가 허락 필요).

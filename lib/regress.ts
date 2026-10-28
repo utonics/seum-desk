@@ -1,6 +1,6 @@
 /** 회귀 결과 요약 · 필터 · CSV 내보내기 */
 import { toCsv } from "./csv";
-import { FAIL_TYPES, type FailType, type LogResult, type TestResult } from "./logParser";
+import { FAIL_TYPES, reproCommand, type FailType, type LogResult, type TestResult } from "./logParser";
 
 export interface FailTypeCount {
   type: FailType;
@@ -78,4 +78,44 @@ export function resultsToCsv(results: ReadonlyArray<LogResult>): string {
 
 export function formatPercent(rate: number, digits = 1): string {
   return `${(rate * 100).toFixed(digits)}%`;
+}
+
+// ---------------------------------------------------------------- 원인별 묶기
+
+export interface ErrorGroup {
+  /** 숫자·16진값을 N·0x… 로 바꾼 메시지 패턴 */
+  pattern: string;
+  count: number;
+  /** 이 패턴의 실패 유형 (같은 패턴은 같은 유형) */
+  failType: FailType | null;
+  examples: LogResult[];
+}
+
+/** 오류 메시지에서 매번 달라지는 숫자(타임스탬프·사이클·값·id)를 지워 같은 원인끼리 묶는다. */
+export function normalizeError(msg: string): string {
+  return msg
+    .replace(/0x[0-9a-fA-F]+/g, "0x…")
+    .replace(/\b\d+\b/g, "N")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+export function groupByError(results: ReadonlyArray<LogResult>, maxExamples = 3): ErrorGroup[] {
+  const groups = new Map<string, ErrorGroup>();
+  for (const r of results) {
+    if (r.result !== "FAIL") continue;
+    const pattern = r.firstError ? normalizeError(r.firstError) : "(오류 메시지 없음)";
+    const g = groups.get(pattern) ?? { pattern, count: 0, failType: r.failType, examples: [] };
+    g.count++;
+    if (g.examples.length < maxExamples) g.examples.push(r);
+    groups.set(pattern, g);
+  }
+  return [...groups.values()].sort((a, b) => b.count - a.count || a.pattern.localeCompare(b.pattern));
+}
+
+/** 실패 건의 재현 명령을 한 줄씩 (중복 제거, 테스트명·시드 순) */
+export function reproCommands(results: ReadonlyArray<LogResult>): string {
+  const set = new Set<string>();
+  for (const r of results) if (r.result === "FAIL") set.add(reproCommand(r));
+  return [...set].sort().join("\n");
 }

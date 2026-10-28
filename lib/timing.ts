@@ -157,3 +157,63 @@ export function buildTrend(reports: ReadonlyArray<TimingReport>): BuildSummary[]
     .map(summarizeBuild)
     .sort((a, b) => a.build.localeCompare(b.build, undefined, { numeric: true }));
 }
+
+// ---------------------------------------------------------------- 위반 경로 · endpoint 추적
+
+export interface ViolatingPath extends TimingPath {
+  build: string;
+}
+
+/** 모든 빌드의 위반 경로. slack 오름차순(가장 나쁜 것 먼저), 같으면 빌드·경로 번호 순 */
+export function violatingPaths(reports: ReadonlyArray<TimingReport>): ViolatingPath[] {
+  const out: ViolatingPath[] = [];
+  for (const r of reports) for (const p of r.paths) if (p.slack < 0) out.push({ ...p, build: r.build });
+  return out.sort((a, b) => a.slack - b.slack || a.build.localeCompare(b.build, undefined, { numeric: true }) || a.index - b.index);
+}
+
+export interface EndpointHistory {
+  endpoint: string;
+  group: string;
+  /** 빌드 → 그 빌드에서 이 endpoint의 최악 slack. 리포트에 없으면 null */
+  slackByBuild: Record<string, number | null>;
+  /** 위반한 빌드 수 */
+  violatedBuilds: number;
+  /** 가장 최근 빌드에서도 위반인가 */
+  stillViolating: boolean;
+}
+
+/**
+ * 어느 빌드에서든 한 번이라도 위반한 endpoint를 빌드별로 추적한다.
+ * 정렬: 최근 빌드에서 아직 위반인 것 → 위반 빌드 수 많은 것 → 이름.
+ */
+export function endpointHistory(reports: ReadonlyArray<TimingReport>): EndpointHistory[] {
+  const builds = [...reports].map((r) => r.build).sort((a, b) => a.localeCompare(b, undefined, { numeric: true }));
+  const latest = builds[builds.length - 1];
+  const byEndpoint = new Map<string, { group: string; slack: Map<string, number> }>();
+
+  for (const r of reports) {
+    for (const p of r.paths) {
+      const e = byEndpoint.get(p.endpoint) ?? { group: p.group, slack: new Map<string, number>() };
+      const prev = e.slack.get(r.build);
+      if (prev === undefined || p.slack < prev) e.slack.set(r.build, p.slack);
+      byEndpoint.set(p.endpoint, e);
+    }
+  }
+
+  const out: EndpointHistory[] = [];
+  for (const [endpoint, e] of byEndpoint) {
+    const slackByBuild: Record<string, number | null> = {};
+    let violated = 0;
+    for (const b of builds) {
+      const s = e.slack.get(b);
+      slackByBuild[b] = s === undefined ? null : s;
+      if (s !== undefined && s < 0) violated++;
+    }
+    if (violated === 0) continue;
+    const last = slackByBuild[latest];
+    out.push({ endpoint, group: e.group, slackByBuild, violatedBuilds: violated, stillViolating: last !== null && last < 0 });
+  }
+  return out.sort(
+    (a, b) => Number(b.stillViolating) - Number(a.stillViolating) || b.violatedBuilds - a.violatedBuilds || a.endpoint.localeCompare(b.endpoint),
+  );
+}

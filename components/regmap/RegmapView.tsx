@@ -10,6 +10,7 @@ import { useDeskStore, type Loaded } from "@/store/deskStore";
 import { RegisterTable } from "./RegisterTable";
 import { CodePreview } from "./CodePreview";
 import { DiffView } from "./DiffView";
+import { SpecCheck } from "./SpecCheck";
 
 type Slot = "from" | "to";
 
@@ -21,7 +22,7 @@ export function RegmapView() {
   const [active, setActive] = useState<Slot>("from");
   const [error, setError] = useState<string | null>(null);
   const [opts, setOpts] = useState<DiffOptions>(DEFAULT_DIFF_OPTIONS);
-  const [tab, setTab] = useState<"table" | "code" | "diff">("table");
+  const [tab, setTab] = useState<"table" | "code" | "diff" | "spec">("table");
 
   const current: Loaded<RegMap> | null = active === "from" ? from : to;
   const issues = useMemo(() => (current ? validateRegmap(current.data) : []), [current]);
@@ -103,20 +104,21 @@ export function RegmapView() {
             {slotLabel("from", from)}
             {slotLabel("to", to)}
             <span className="flex-1" />
-            {(["table", "code", "diff"] as const).map((t) => (
+            {(["table", "code", "diff", "spec"] as const).map((t) => (
               <button
                 key={t}
                 type="button"
                 onClick={() => setTab(t)}
                 className={`px-3 py-1.5 rounded text-sm ${tab === t ? "bg-neutral-200 font-semibold" : "hover:bg-neutral-100"}`}
               >
-                {t === "table" ? "레지스터 표" : t === "code" ? "C 헤더 / Verilog" : `변경점 비교${diff ? ` (${diff.summary.added + diff.summary.changed + diff.summary.removed})` : ""}`}
+                {t === "table" ? "레지스터 표" : t === "code" ? "C 헤더 / Verilog" : t === "spec" ? "명세 대조" : `변경점 비교${diff ? ` (${diff.summary.added + diff.summary.changed + diff.summary.removed})` : ""}`}
               </button>
             ))}
           </div>
 
           {tab === "table" && current && <RegisterTable map={current.data} issues={issues} />}
           {tab === "code" && current && <CodePreview map={current.data} label={current.label} />}
+          {tab === "spec" && current && <SpecCheck map={current.data} mapLabel={current.label} />}
           {tab === "diff" &&
             (diff && from && to ? (
               <DiffView diff={diff} fromLabel={from.label} toLabel={to.label} opts={opts} onOpts={setOpts} />

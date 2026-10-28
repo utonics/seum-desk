@@ -25,10 +25,28 @@ function Row({ r }: { r: LogResult }) {
   );
 }
 
-export function RunCompareCard({ comparison, prevLabel, onClear }: { comparison: RunComparison; prevLabel: string; onClear: () => void }) {
+export function RunCompareCard({
+  comparison,
+  prevLabel,
+  pinned,
+  onPin,
+  onClear,
+}: {
+  comparison: RunComparison;
+  prevLabel: string;
+  pinned: boolean;
+  onPin: (pinned: boolean) => void;
+  onClear: () => void;
+}) {
   const [open, setOpen] = useState<Key | null>(comparison.newlyFailed.length > 0 ? "newlyFailed" : null);
   return (
-    <Card title={`이전 실행(${prevLabel})과 비교`}>
+    <Card
+      title={
+        <span>
+          이전 실행({prevLabel})과 비교 {pinned && <Badge tone="neutral">기준 고정</Badge>}
+        </span>
+      }
+    >
       <div className="flex flex-wrap items-center gap-2">
         {SECTIONS.map((s) => {
           const n = comparison[s.key].length;
@@ -44,6 +62,9 @@ export function RunCompareCard({ comparison, prevLabel, onClear }: { comparison:
           );
         })}
         <span className="flex-1" />
+        <Button variant="ghost" onClick={() => onPin(!pinned)} title="고정하면 새 로그를 열어도 이 실행이 기준으로 남습니다">
+          {pinned ? "고정 해제" : "기준 고정"}
+        </Button>
         <Button variant="ghost" onClick={onClear}>
           비교 끄기
         </Button>

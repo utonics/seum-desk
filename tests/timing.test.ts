@@ -39,3 +39,25 @@ describe("timing", () => {
     expect(trend.map((t) => t.violations)).toEqual([9, 5, 1]);
   });
 });
+
+describe("위반 경로 · endpoint 추적", () => {
+  it("위반 경로는 정답지의 빌드별 위반 수 합(9+5+1)과 같고 최악 slack이 먼저", async () => {
+    const { violatingPaths } = await import("@/lib/timing");
+    const v = violatingPaths(reports);
+    expect(v).toHaveLength(15);
+    expect(v[0]).toMatchObject({ build: "b102", slack: -0.173, endpoint: "u_irq/irq_q_reg[27]" });
+    expect(v.filter((p) => p.build === "b103")).toHaveLength(1);
+  });
+
+  it("endpoint 추적: b103에서 아직 위반인 것이 맨 앞", async () => {
+    const { endpointHistory } = await import("@/lib/timing");
+    const h = endpointHistory(reports);
+    expect(h[0]).toMatchObject({ endpoint: "u_bus/rdata_q_reg[10]", stillViolating: true, violatedBuilds: 1 });
+    expect(h[0].slackByBuild).toEqual({ b101: null, b102: null, b103: -0.116 });
+    expect(h.filter((x) => x.stillViolating)).toHaveLength(1);
+    // u_lat/max_hit_reg: b101 MET(+0.161), b102 VIOLATED(-0.170), b103 MET(최악 +0.046)
+    const m = h.find((x) => x.endpoint === "u_lat/max_hit_reg")!;
+    expect(m.slackByBuild).toEqual({ b101: 0.161, b102: -0.17, b103: 0.046 });
+    expect(m.stillViolating).toBe(false);
+  });
+});

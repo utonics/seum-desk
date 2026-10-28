@@ -4,9 +4,10 @@ import { useMemo, useState } from "react";
 import { DropZone } from "@/components/DropZone";
 import { Badge, Button, Card, Empty, ErrorBox } from "@/components/ui";
 import { fetchSampleIndex, fetchSampleText, readTextFiles } from "@/lib/browserFiles";
-import { buildTrend, parseTimingReport } from "@/lib/timing";
+import { buildTrend, endpointHistory, parseTimingReport, violatingPaths } from "@/lib/timing";
 import { useDeskStore } from "@/store/deskStore";
 import { TrendChart } from "./TrendChart";
+import { EndpointHistoryTable, ViolatingPathTable } from "./PathTables";
 
 export function TimingView() {
   const timing = useDeskStore((s) => s.timing);
@@ -16,6 +17,9 @@ export function TimingView() {
   const trend = useMemo(() => (timing ? buildTrend(timing.data) : []), [timing]);
   const groups = useMemo(() => [...new Set(trend.flatMap((t) => Object.keys(t.by_group)))].sort(), [trend]);
   const aliasNotes = trend.filter((t) => Object.keys(t.groupAliases).length > 0);
+  const builds = useMemo(() => trend.map((t) => t.build), [trend]);
+  const paths = useMemo(() => (timing ? violatingPaths(timing.data) : []), [timing]);
+  const history = useMemo(() => (timing ? endpointHistory(timing.data) : []), [timing]);
 
   const load = async (files: { name: string; text: string }[], source: "sample" | "local", label: string) => {
     try {
@@ -129,6 +133,9 @@ export function TimingView() {
               <TrendChart trend={trend} groups={groups} mode="slack" />
             </Card>
           </div>
+
+          <EndpointHistoryTable history={history} builds={builds} />
+          <ViolatingPathTable paths={paths} builds={builds} />
         </>
       )}
     </div>

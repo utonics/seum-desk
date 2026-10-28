@@ -3,13 +3,14 @@
 import { useMemo, useState } from "react";
 import { DropZone } from "@/components/DropZone";
 import { Button, Card, Empty, ErrorBox, Stat } from "@/components/ui";
-import { fetchSampleIndex, fetchSampleText, readTextFiles, downloadText } from "@/lib/browserFiles";
+import { copyText, fetchSampleIndex, fetchSampleText, readTextFiles, downloadText } from "@/lib/browserFiles";
 import { parseLogs, FAIL_TYPES, type LogResult } from "@/lib/logParser";
-import { applyFilter, EMPTY_FILTER, formatPercent, resultsToCsv, summarize, type RegressFilter } from "@/lib/regress";
+import { applyFilter, EMPTY_FILTER, formatPercent, groupByError, reproCommands, resultsToCsv, summarize, type RegressFilter } from "@/lib/regress";
 import { useDeskStore } from "@/store/deskStore";
 import { compareRuns } from "@/lib/regressCompare";
 import { FailTypeChart } from "./FailTypeChart";
 import { RunCompareCard } from "./RunCompareCard";
+import { ErrorGroupCard } from "./ErrorGroupCard";
 import { ResultTable } from "./ResultTable";
 
 export function RegressView() {
@@ -17,6 +18,10 @@ export function RegressView() {
   const setLogs = useDeskStore((s) => s.setLogs);
   const prevLogs = useDeskStore((s) => s.prevLogs);
   const clearPrevLogs = useDeskStore((s) => s.clearPrevLogs);
+  const prevPinned = useDeskStore((s) => s.prevPinned);
+  const setPrevPinned = useDeskStore((s) => s.setPrevPinned);
+  const useCurrentAsPrev = useDeskStore((s) => s.useCurrentAsPrev);
+  const [bulkCopied, setBulkCopied] = useState<"ok" | "fail" | null>(null);
   const [filter, setFilter] = useState<RegressFilter>(EMPTY_FILTER);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -26,6 +31,7 @@ export function RegressView() {
   const summary = useMemo(() => summarize(results), [results]);
   const filtered = useMemo(() => applyFilter(results, filter), [results, filter]);
   const tests = useMemo(() => [...new Set(results.map((r) => r.test))].sort(), [results]);
+  const errorGroups = useMemo(() => groupByError(results), [results]);
   const comparison = useMemo(() => (prevLogs && logs ? compareRuns(prevLogs.data, logs.data) : null), [prevLogs, logs]);
 
   const load = async (fn: () => Promise<{ name: string; text: string }[]>, source: "sample" | "local", label: string) => {
@@ -95,8 +101,19 @@ export function RegressView() {
           </div>
 
           {comparison && prevLogs && (
-            <RunCompareCard comparison={comparison} prevLabel={prevLogs.label} onClear={clearPrevLogs} />
+            <RunCompareCard comparison={comparison} prevLabel={prevLogs.label} pinned={prevPinned} onPin={setPrevPinned} onClear={clearPrevLogs} />
           )}
+          {!comparison && (
+            <div className="text-xs text-neutral-500">
+              다음에 여는 로그와 비교하려면{" "}
+              <button type="button" className="underline" onClick={useCurrentAsPrev}>
+                지금 실행을 비교 기준으로
+              </button>{" "}
+              삼으세요. (기준을 따로 정하지 않아도 새 로그를 열면 직전 로그가 기준이 됩니다.)
+            </div>
+          )}
+
+          <ErrorGroupCard groups={errorGroups} />
 
           <div className="grid md:grid-cols-2 gap-4">
             <Card title="실패 유형별 건수">
@@ -158,6 +175,16 @@ export function RegressView() {
               </Button>
               <Button onClick={() => downloadText("regress_summary.csv", resultsToCsv(filtered), "text/csv;charset=utf-8")}>
                 CSV 내보내기 ({filtered.length})
+              </Button>
+              <Button
+                disabled={!filtered.some((r) => r.result === "FAIL")}
+                title="표에 보이는 실패 건의 make sim 명령을 한 줄씩 복사"
+                onClick={async () => {
+                  setBulkCopied((await copyText(reproCommands(filtered))) ? "ok" : "fail");
+                  setTimeout(() => setBulkCopied(null), 1500);
+                }}
+              >
+                {bulkCopied === "ok" ? "복사됨" : bulkCopied === "fail" ? "복사 실패" : `실패 재현 명령 모두 복사 (${filtered.filter((r) => r.result === "FAIL").length})`}
               </Button>
             </div>
             <ResultTable rows={filtered} />
