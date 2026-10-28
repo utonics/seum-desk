@@ -37,15 +37,19 @@ export function BitFieldDiagram({ register, width, issues }: { register: Registe
           const x = 1 + (width - 1 - msb) * cell;
           const w = (msb - f.lsb + 1) * cell;
           const bad = badFields.has(f.name);
+          const label = `${f.name} [${bitsLabel(f)}] ${f.access} 리셋 ${f.reset}`;
           return (
             <g key={f.name}>
+              <title>{label}</title>
               <rect x={x} y={14} width={w} height={h - 14} fill="none" stroke={bad ? "#b91c1c" : "#525252"} strokeWidth={bad ? 2 : 1} />
               <text x={x + w / 2} y={14 + (h - 14) / 2 + 4} fontSize={10} textAnchor="middle" fill="#171717" fontFamily="monospace">
                 {w >= cell * f.name.length * 0.45 ? f.name : f.name.slice(0, Math.max(1, Math.floor(w / 7)))}
               </text>
-              <text x={x + w / 2} y={h + 13} fontSize={9} textAnchor="middle" fill="#737373">
-                [{bitsLabel(f)}] {f.access}
-              </text>
+              {w >= cell * 3 && (
+                <text x={x + w / 2} y={h + 13} fontSize={9} textAnchor="middle" fill="#737373">
+                  [{bitsLabel(f)}] {f.access}
+                </text>
+              )}
             </g>
           );
         })}

@@ -15,7 +15,13 @@ const TOP_N = 2;
 const RECENT_N = 3;
 
 export function HomeView() {
-  const { logs, regmapFrom, regmapTo, timing, setLogs, setRegmapFrom, setRegmapTo } = useDeskStore();
+  const logs = useDeskStore((s) => s.logs);
+  const regmapFrom = useDeskStore((s) => s.regmapFrom);
+  const regmapTo = useDeskStore((s) => s.regmapTo);
+  const timing = useDeskStore((s) => s.timing);
+  const setLogs = useDeskStore((s) => s.setLogs);
+  const setRegmapFrom = useDeskStore((s) => s.setRegmapFrom);
+  const setRegmapTo = useDeskStore((s) => s.setRegmapTo);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
 

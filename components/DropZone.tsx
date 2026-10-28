@@ -18,11 +18,17 @@ interface Props {
 
 export function DropZone({ accept, directory = false, multiple = true, onFiles, hint, extra, busy }: Props) {
   const [over, setOver] = useState(false);
+  const [notice, setNotice] = useState<string | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
   const handle = (files: File[]) => {
     const picked = filterByExtension(files, accept);
-    if (picked.length > 0) onFiles(picked);
+    if (picked.length > 0) {
+      setNotice(null);
+      onFiles(picked);
+    } else {
+      setNotice(files.length === 0 ? "파일이 없습니다." : `${accept.join(", ")} 파일이 없습니다 (받은 ${files.length}개).`);
+    }
   };
 
   const onDrop = async (e: DragEvent<HTMLDivElement>) => {
@@ -53,6 +59,7 @@ export function DropZone({ accept, directory = false, multiple = true, onFiles, 
       <div className="text-sm text-neutral-600">
         {hint}
         <div className="text-xs text-neutral-400 mt-1">파일은 이 브라우저 안에서만 읽습니다. 어디로도 보내지 않습니다.</div>
+        {notice && <div className="text-xs text-amber-700 mt-1">{notice}</div>}
       </div>
       <div className="flex items-center gap-2">
         <button

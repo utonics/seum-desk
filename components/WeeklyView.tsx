@@ -10,7 +10,7 @@ export function WeeklyView() {
   const [tasks, setTasks] = useState<Task[] | null>(null);
   const [label, setLabel] = useState("");
   const [error, setError] = useState<string | null>(null);
-  const [copied, setCopied] = useState(false);
+  const [copied, setCopied] = useState<"ok" | "fail" | null>(null);
 
   const report = useMemo(() => (tasks ? buildWeekly(tasks) : null), [tasks]);
   const md = useMemo(() => (report ? weeklyToMarkdown(report) : ""), [report]);
@@ -71,13 +71,11 @@ export function WeeklyView() {
               <Button
                 variant="primary"
                 onClick={async () => {
-                  if (await copyText(md)) {
-                    setCopied(true);
-                    setTimeout(() => setCopied(false), 1200);
-                  }
+                  setCopied((await copyText(md)) ? "ok" : "fail");
+                  setTimeout(() => setCopied(null), 1500);
                 }}
               >
-                {copied ? "복사됨" : "복사"}
+                {copied === "ok" ? "복사됨" : copied === "fail" ? "복사 실패" : "복사"}
               </Button>
               <Button onClick={() => downloadText(`weekly_${report.dateFrom}.md`, md, "text/markdown;charset=utf-8")}>다운로드</Button>
             </div>

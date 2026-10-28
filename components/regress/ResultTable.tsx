@@ -9,16 +9,14 @@ const PAGE = 200;
 
 export function ResultTable({ rows }: { rows: LogResult[] }) {
   const [shown, setShown] = useState(PAGE);
-  const [copied, setCopied] = useState<string | null>(null);
+  const [copied, setCopied] = useState<{ key: string; ok: boolean } | null>(null);
 
   const visible = rows.slice(0, shown);
 
-  const copy = async (r: LogResult) => {
-    const cmd = reproCommand(r);
-    if (await copyText(cmd)) {
-      setCopied(r.file);
-      setTimeout(() => setCopied(null), 1200);
-    }
+  const copy = async (r: LogResult, key: string) => {
+    const ok = await copyText(reproCommand(r));
+    setCopied({ key, ok });
+    setTimeout(() => setCopied(null), 1500);
   };
 
   if (rows.length === 0) return <div className="text-sm text-neutral-500 py-6 text-center">조건에 맞는 로그가 없습니다.</div>;
@@ -38,8 +36,10 @@ export function ResultTable({ rows }: { rows: LogResult[] }) {
           </tr>
         </thead>
         <tbody>
-          {visible.map((r) => (
-            <tr key={r.file} className="border-t border-neutral-100 align-top">
+          {visible.map((r, i) => {
+            const key = `${r.file}#${i}`;
+            return (
+            <tr key={key} className="border-t border-neutral-100 align-top">
               <td className="py-1 pr-2 font-mono text-xs whitespace-nowrap">{r.file}</td>
               <td className="py-1 pr-2 font-mono text-xs">{r.test}</td>
               <td className="py-1 pr-2 font-mono text-xs text-right">{r.seed}</td>
@@ -49,12 +49,13 @@ export function ResultTable({ rows }: { rows: LogResult[] }) {
               <td className="py-1 pr-2">{r.failType && <Badge tone="warn">{r.failType}</Badge>}</td>
               <td className="py-1 pr-2 text-xs text-neutral-600 max-w-md">{r.firstError ?? ""}</td>
               <td className="py-1 whitespace-nowrap">
-                <Button onClick={() => copy(r)} title={reproCommand(r)}>
-                  {copied === r.file ? "복사됨" : "명령 복사"}
+                <Button onClick={() => copy(r, key)} title={reproCommand(r)}>
+                  {copied?.key === key ? (copied.ok ? "복사됨" : "복사 실패") : "명령 복사"}
                 </Button>
               </td>
             </tr>
-          ))}
+            );
+          })}
         </tbody>
       </table>
       {rows.length > shown && (

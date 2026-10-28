@@ -8,7 +8,7 @@ import { generateCHeader, generateVerilog } from "@/lib/regmapCodegen";
 
 export function CodePreview({ map, label }: { map: RegMap; label: string }) {
   const [lang, setLang] = useState<"c" | "verilog">("c");
-  const [copied, setCopied] = useState(false);
+  const [copied, setCopied] = useState<"ok" | "fail" | null>(null);
   const code = useMemo(() => (lang === "c" ? generateCHeader(map) : generateVerilog(map)), [map, lang]);
   const base = label.replace(/\.ya?ml$/i, "") || map.block;
   const filename = lang === "c" ? `${base}_regs.h` : `${base}_regs.vh`;
@@ -25,13 +25,11 @@ export function CodePreview({ map, label }: { map: RegMap; label: string }) {
         <span className="flex-1" />
         <Button
           onClick={async () => {
-            if (await copyText(code)) {
-              setCopied(true);
-              setTimeout(() => setCopied(false), 1200);
-            }
+            setCopied((await copyText(code)) ? "ok" : "fail");
+            setTimeout(() => setCopied(null), 1500);
           }}
         >
-          {copied ? "복사됨" : "복사"}
+          {copied === "ok" ? "복사됨" : copied === "fail" ? "복사 실패" : "복사"}
         </Button>
         <Button onClick={() => downloadText(filename, code)}>다운로드 ({filename})</Button>
       </div>
