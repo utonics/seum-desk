@@ -1,0 +1,8 @@
+UVM_INFO @ 0: reporter [RNTST] Running test lat_max_boundary_test with seed 501624...
+UVM_INFO @ 0: uvm_test_top.env [BUILD] agents: enq, deq; scoreboard on
+UVM_INFO @ 100: uvm_test_top.env.driver [DRV] reset released
+UVM_INFO @ 7773: uvm_test_top.env.scoreboard [SB] 214 transfers compared
+UVM_ERROR @ 15547: uvm_test_top.env.scoreboard [CMP] deq_data mismatch exp=0x0eb got=0x13b id=3
+UVM_INFO @ 15557: reporter [TEST_DONE] *** TEST FAILED ***
+--- UVM Report Summary --- UVM_ERROR : 1  UVM_FATAL : 0
+Simulation finished at 15567 ps, wall 0:01:38

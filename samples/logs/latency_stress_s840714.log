@@ -1,0 +1,8 @@
+UVM_INFO @ 0: reporter [RNTST] Running test latency_stress_test with seed 840714...
+UVM_INFO @ 0: uvm_test_top.env [BUILD] agents: enq, deq; scoreboard on
+UVM_INFO @ 100: uvm_test_top.env.driver [DRV] reset released
+UVM_INFO @ 39173: uvm_test_top.env.scoreboard [SB] 220 transfers compared
+UVM_FATAL @ 78346: uvm_test_top.env.monitor [RST] valid asserted while rst_n=0 at cycle 1393
+UVM_INFO @ 78356: reporter [TEST_DONE] *** TEST FAILED ***
+--- UVM Report Summary --- UVM_ERROR : 0  UVM_FATAL : 1
+Simulation finished at 78366 ps, wall 0:03:20

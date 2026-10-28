@@ -1,0 +1,8 @@
+UVM_INFO @ 0: reporter [RNTST] Running test latency_stress_test with seed 568551...
+UVM_INFO @ 0: uvm_test_top.env [BUILD] agents: enq, deq; scoreboard on
+UVM_INFO @ 100: uvm_test_top.env.driver [DRV] reset released
+UVM_INFO @ 4051: uvm_test_top.env.scoreboard [SB] 43 transfers compared
+UVM_ERROR @ 8103: uvm_test_top.env.scoreboard [CMP] deq_data mismatch exp=0x363 got=0x26f id=3
+UVM_INFO @ 8113: reporter [TEST_DONE] *** TEST FAILED ***
+--- UVM Report Summary --- UVM_ERROR : 1  UVM_FATAL : 0
+Simulation finished at 8123 ps, wall 0:07:50

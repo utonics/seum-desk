@@ -1,0 +1,7 @@
+UVM_INFO @ 0: reporter [RNTST] Running test latency_stress_test with seed 89930...
+UVM_INFO @ 0: uvm_test_top.env [BUILD] agents: enq, deq; scoreboard on
+UVM_INFO @ 100: uvm_test_top.env.driver [DRV] reset released
+UVM_INFO @ 33609: uvm_test_top.env.scoreboard [SB] 640 transfers compared
+UVM_INFO @ 67219: reporter [TEST_DONE] *** TEST PASSED ***
+--- UVM Report Summary --- UVM_ERROR : 0  UVM_FATAL : 0
+Simulation finished at 67239 ps, wall 0:01:19

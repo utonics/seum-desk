@@ -1,0 +1,8 @@
+UVM_INFO @ 0: reporter [RNTST] Running test irq_w1c_test with seed 532476...
+UVM_INFO @ 0: uvm_test_top.env [BUILD] agents: enq, deq; scoreboard on
+UVM_INFO @ 100: uvm_test_top.env.driver [DRV] reset released
+UVM_INFO @ 30406: uvm_test_top.env.scoreboard [SB] 813 transfers compared
+UVM_ERROR @ 60812: uvm_test_top.env.scoreboard [CMP] deq_data mismatch exp=0x011 got=0x176 id=2
+UVM_INFO @ 60822: reporter [TEST_DONE] *** TEST FAILED ***
+--- UVM Report Summary --- UVM_ERROR : 1  UVM_FATAL : 0
+Simulation finished at 60832 ps, wall 0:09:29
