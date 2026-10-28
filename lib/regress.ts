@@ -72,7 +72,7 @@ export function applyFilter(results: ReadonlyArray<LogResult>, f: RegressFilter)
 export function resultsToCsv(results: ReadonlyArray<LogResult>): string {
   return toCsv(
     ["file", "test", "seed", "result", "fail_type", "first_error"],
-    results.map((r) => [r.file, r.test, r.seed, r.result, r.failType ?? "", r.firstError ?? ""]),
+    results.map((r) => [r.file, r.test, r.seed ?? "", r.result, r.failType ?? "", r.firstError ?? ""]),
   );
 }
 

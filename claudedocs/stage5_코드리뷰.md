@@ -35,3 +35,10 @@
 ## 완료 게이트
 
 `npm test` 36/36 · `npm run build` 성공 · `npm run lint` 0 문제 (아래 보고 참조)
+
+## 추천 사항 반영 (2026-10-28, 5단계 이후)
+
+- 리뷰 #6 반영: 시드 없는 로그는 `seed: null`, 재현 명령은 `make sim TEST=<test>`만. RNTST 줄에 seed가 없어도 테스트명을 읽는다.
+- `tests/perf.test.ts`: `scripts/gen-logs.mjs`의 `generateLogs(1000)`를 메모리에서 만들어 파싱+요약+필터 1초 이내를 고정. 측정값 18 ms(테스트 파일 전체).
+- 회귀 탭 '이전 실행과 비교'(`lib/regressCompare.ts`): 새로 실패 · 고쳐짐 · 여전히 실패 · 사라짐 · 새 실행. 샘플 100개 → 가상 1,000개로 확인: 새로 실패 135 · 사라짐 100 · 새 실행 1000.
+- Windows(Edge) 확인은 미검증으로 남음.

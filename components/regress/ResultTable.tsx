@@ -42,7 +42,7 @@ export function ResultTable({ rows }: { rows: LogResult[] }) {
             <tr key={key} className="border-t border-neutral-100 align-top">
               <td className="py-1 pr-2 font-mono text-xs whitespace-nowrap">{r.file}</td>
               <td className="py-1 pr-2 font-mono text-xs">{r.test}</td>
-              <td className="py-1 pr-2 font-mono text-xs text-right">{r.seed}</td>
+              <td className="py-1 pr-2 font-mono text-xs text-right">{r.seed ?? <span className="text-neutral-400" title="시드를 찾지 못함">–</span>}</td>
               <td className="py-1 pr-2">
                 <Badge tone={r.result === "PASS" ? "pass" : "fail"}>{r.result}</Badge>
               </td>

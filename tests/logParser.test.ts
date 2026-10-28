@@ -1,7 +1,7 @@
 import { describe, it, expect } from "vitest";
 import { readFileSync, readdirSync } from "node:fs";
 import { join } from "node:path";
-import { parseLog, parseLogs, classifyFailure, reproCommand } from "@/lib/logParser";
+import { parseLog, parseLogs, classifyFailure, reproCommand, runKey } from "@/lib/logParser";
 import { parseCsv } from "@/lib/csv";
 
 const SAMPLES = join(__dirname, "..", "samples");
@@ -73,6 +73,14 @@ describe("logParser", () => {
     expect(classifyFailure("x [RST] valid asserted while rst_n=0")).toBe("RESET_SEQ");
     expect(classifyFailure("x [DRV] unexpected x on deq_rdy")).toBe("UNKNOWN");
     expect(classifyFailure(null)).toBe("UNKNOWN");
+  });
+
+  it("시드가 어디에도 없으면 null이고 재현 명령에서 SEED를 뺀다", () => {
+    const r = parseLog("smoke.log", "UVM_INFO @ 0: reporter [RNTST] Running test smoke_test...\n*** TEST PASSED ***\n");
+    expect(r).toMatchObject({ test: "smoke", seed: null, result: "PASS" });
+    expect(reproCommand(r)).toBe("make sim TEST=smoke");
+    expect(runKey(r)).toBe("smoke");
+    expect(runKey({ test: "a", seed: 7 })).toBe("a#7");
   });
 
   it("RNTST 줄이 없으면 파일명에서 테스트명·시드를 뽑는다", () => {

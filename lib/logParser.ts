@@ -16,7 +16,8 @@ export type FailType = (typeof FAIL_TYPES)[number];
 export interface LogResult {
   file: string;
   test: string;
-  seed: number;
+  /** 본문·파일명 어디에도 시드가 없으면 null (재현 명령에서 SEED를 뺀다) */
+  seed: number | null;
   result: TestResult;
   /** FAIL일 때만 값이 있다. PASS면 null */
   failType: FailType | null;
@@ -24,7 +25,8 @@ export interface LogResult {
   firstError: string | null;
 }
 
-const RNTST_RE = /\[RNTST\]\s+Running test\s+(\S+?)(?:_test)?\s+with seed\s+(\d+)/;
+const RNTST_RE = /\[RNTST\]\s+Running test\s+(\S+)/;
+const SEED_RE = /with seed\s+(\d+)/;
 const FILENAME_RE = /^(.*)_s(\d+)\.log$/;
 const ERROR_LINE_RE = /^UVM_(?:ERROR|FATAL)\s*@\s*\d+:\s*(.*)$/;
 
@@ -43,7 +45,7 @@ export function parseLog(file: string, text: string): LogResult {
   const lines = text.split(/\r?\n/);
 
   let test = "";
-  let seed = NaN;
+  let seed: number | null = null;
   let firstError: string | null = null;
   let passed = false;
   let failed = false;
@@ -57,8 +59,9 @@ export function parseLog(file: string, text: string): LogResult {
     if (!test) {
       const m = RNTST_RE.exec(line);
       if (m) {
-        test = m[1];
-        seed = Number(m[2]);
+        test = m[1].replace(/\.\.\.$/, "").replace(/_test$/, "");
+        const sm = SEED_RE.exec(line);
+        if (sm) seed = Number(sm[1]);
         continue;
       }
     }
@@ -79,8 +82,8 @@ export function parseLog(file: string, text: string): LogResult {
   // 본문에 테스트명·시드가 없으면 파일명에서 보충한다.
   const base = file.split(/[\\/]/).pop() ?? file;
   const fm = FILENAME_RE.exec(base);
-  if (!test && fm) test = fm[1];
-  if (Number.isNaN(seed) && fm) seed = Number(fm[2]);
+  if (!test) test = fm ? fm[1] : base.replace(/\.log$/i, "");
+  if (seed === null && fm) seed = Number(fm[2]);
 
   const isFail =
     failed || (!passed && (firstError !== null || uvmErrors > 0 || uvmFatals > 0));
@@ -103,5 +106,10 @@ export function parseLogs(
 }
 
 export function reproCommand(r: Pick<LogResult, "test" | "seed">): string {
-  return `make sim TEST=${r.test} SEED=${r.seed}`;
+  return r.seed === null ? `make sim TEST=${r.test}` : `make sim TEST=${r.test} SEED=${r.seed}`;
+}
+
+/** 같은 테스트 실행을 가리키는 키 (이전 실행과 비교할 때 사용) */
+export function runKey(r: Pick<LogResult, "test" | "seed">): string {
+  return r.seed === null ? r.test : `${r.test}#${r.seed}`;
 }

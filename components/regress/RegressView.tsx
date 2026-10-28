@@ -7,12 +7,16 @@ import { fetchSampleIndex, fetchSampleText, readTextFiles, downloadText } from "
 import { parseLogs, FAIL_TYPES, type LogResult } from "@/lib/logParser";
 import { applyFilter, EMPTY_FILTER, formatPercent, resultsToCsv, summarize, type RegressFilter } from "@/lib/regress";
 import { useDeskStore } from "@/store/deskStore";
+import { compareRuns } from "@/lib/regressCompare";
 import { FailTypeChart } from "./FailTypeChart";
+import { RunCompareCard } from "./RunCompareCard";
 import { ResultTable } from "./ResultTable";
 
 export function RegressView() {
   const logs = useDeskStore((s) => s.logs);
   const setLogs = useDeskStore((s) => s.setLogs);
+  const prevLogs = useDeskStore((s) => s.prevLogs);
+  const clearPrevLogs = useDeskStore((s) => s.clearPrevLogs);
   const [filter, setFilter] = useState<RegressFilter>(EMPTY_FILTER);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -22,6 +26,7 @@ export function RegressView() {
   const summary = useMemo(() => summarize(results), [results]);
   const filtered = useMemo(() => applyFilter(results, filter), [results, filter]);
   const tests = useMemo(() => [...new Set(results.map((r) => r.test))].sort(), [results]);
+  const comparison = useMemo(() => (prevLogs && logs ? compareRuns(prevLogs.data, logs.data) : null), [prevLogs, logs]);
 
   const load = async (fn: () => Promise<{ name: string; text: string }[]>, source: "sample" | "local", label: string) => {
     setBusy(true);
@@ -88,6 +93,10 @@ export function RegressView() {
             <Stat label="실패" value={summary.fail} />
             <Stat label="테스트 종류" value={summary.byTest.length} />
           </div>
+
+          {comparison && prevLogs && (
+            <RunCompareCard comparison={comparison} prevLabel={prevLogs.label} onClear={clearPrevLogs} />
+          )}
 
           <div className="grid md:grid-cols-2 gap-4">
             <Card title="실패 유형별 건수">
