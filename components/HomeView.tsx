@@ -9,7 +9,7 @@ import { formatPercent, summarize } from "@/lib/regress";
 import { parseRegmapYaml } from "@/lib/regmap";
 import { describeChanges, diffRegmaps } from "@/lib/regmapDiff";
 import { buildTrend } from "@/lib/timing";
-import { useDeskStore } from "@/store/deskStore";
+import { formatLoadedAt, useDeskStore } from "@/store/deskStore";
 
 const TOP_N = 2;
 const RECENT_N = 3;
@@ -22,6 +22,7 @@ export function HomeView() {
   const setLogs = useDeskStore((s) => s.setLogs);
   const setRegmapFrom = useDeskStore((s) => s.setRegmapFrom);
   const setRegmapTo = useDeskStore((s) => s.setRegmapTo);
+  const clearAll = useDeskStore((s) => s.clearAll);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -67,7 +68,11 @@ export function HomeView() {
       <div className="flex flex-wrap items-baseline justify-between gap-2">
         <h1 className="text-xl font-semibold">홈 요약</h1>
         <div className="flex items-center gap-2 text-xs text-neutral-500">
-          {logs && <span>로그: {logs.label}</span>}
+          {logs && (
+            <span>
+              로그: {logs.label} {formatLoadedAt(logs.loadedAt)}
+            </span>
+          )}
           {regmapFrom && regmapTo && (
             <span>
               레지스터: {regmapFrom.label} → {regmapTo.label}
@@ -76,6 +81,11 @@ export function HomeView() {
           <Button onClick={loadSamples} disabled={busy} variant={hasAny ? "default" : "primary"}>
             {busy ? "불러오는 중…" : "샘플로 보기"}
           </Button>
+          {hasAny && (
+            <Button onClick={clearAll} variant="ghost" title="이 브라우저에 저장된 파싱 결과를 지웁니다">
+              모두 지우기
+            </Button>
+          )}
         </div>
       </div>
       {error && <div className="text-sm text-red-700">{error}</div>}
@@ -84,7 +94,7 @@ export function HomeView() {
           <div className="text-sm text-neutral-600">
             아직 데이터가 없습니다. <b>샘플로 보기</b>를 누르거나, <Link href="/regress" className="underline">회귀</Link> ·{" "}
             <Link href="/regmap" className="underline">레지스터</Link> · <Link href="/timing" className="underline">타이밍</Link> 탭에서 내 파일을 열면 여기에 요약이 나옵니다.
-            모든 숫자는 열어 둔 데이터에서 계산합니다.
+            모든 숫자는 열어 둔 데이터에서 계산합니다. 파싱 결과는 이 브라우저 안(IndexedDB)에만 저장되어 새로고침해도 남습니다.
           </div>
         </Card>
       )}
